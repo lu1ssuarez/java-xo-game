@@ -30,6 +30,8 @@ public class XO extends JFrame implements Runnable {
     private String $ipPort;
 
     private String $name;
+    
+    private Thread $thread;
 
     /**
      * @param args the command line arguments
@@ -58,11 +60,14 @@ public class XO extends JFrame implements Runnable {
         
         /* 3- input's settings server */
         this.setConfig();
+        
+        $thread = new Thread(this, "TresEnLinea");
+        $thread.start();
     }
 
     @Override
     public void run() {
-
+        
     }
 
     private void setNameUser() {
