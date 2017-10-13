@@ -1,6 +1,7 @@
 package xo;
 
 import java.awt.Dimension;
+import java.net.ServerSocket;
 import javax.swing.JFrame;
 
 /**
@@ -11,7 +12,8 @@ public class XO implements Runnable {
 
     private JFrame $body;
     private Painter $painter;
-   
+    
+    private ServerSocket $serverSocket;
     
     /**
      * @param args the command line arguments
@@ -40,9 +42,7 @@ public class XO implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
-            System.out.println("run");
-        }
+        
     }
     
 }
