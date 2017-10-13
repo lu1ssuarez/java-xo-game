@@ -1,5 +1,6 @@
 package xo;
 
+import java.awt.Dimension;
 import javax.swing.JFrame;
 
 /**
@@ -9,6 +10,8 @@ import javax.swing.JFrame;
 public class XO implements Runnable {
 
     private JFrame $body;
+    private Painter $painter;
+   
     
     /**
      * @param args the command line arguments
@@ -20,9 +23,14 @@ public class XO implements Runnable {
     public XO() {
         System.out.println("Iniciando XO...");
         
+        /* 2- draw jPanel for event listener */
+        $painter = new Painter();
+        $painter.setPreferredSize(new Dimension(506, 527));
+        
         /* 1- init $body with jFrame */
         $body = new JFrame();
         $body.setTitle("XO Game by Eysemberth Abarca");
+        $body.setContentPane($painter);
         $body.setSize(506, 527);
         $body.setLocationRelativeTo(null);
         $body.setResizable(false);
