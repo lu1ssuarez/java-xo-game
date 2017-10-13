@@ -1,6 +1,8 @@
 package xo;
 
 import java.awt.Dimension;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,12 +17,16 @@ public class XO extends JFrame implements Runnable {
 
     private Painter $painter;
 
+    /* Socket Server */
     private ServerSocket $serverSocket;
     private Socket $socket;
+    private DataOutputStream $dataOutputStream;
+    private DataInputStream $dataInputStream;
 
     /* Input setting server */
     private String $ip = "127.0.0.1";
     private int $port = 3000;
+    private String $ipPort;
 
     /**
      * @param args the command line arguments
@@ -62,8 +68,10 @@ public class XO extends JFrame implements Runnable {
     private void setConfigServer() {
         this.setIpServer();
         this.setPortServer();
+        
+        this.$ipPort = this.$ip + ":" + this.$port;
 
-        System.out.println("Conectando al servidor: " + this.$ip + ":" + this.$port);
+        System.out.println("Conectando al servidor: " + this.$ipPort);
     }
 
     private void setIpServer() {
@@ -94,8 +102,12 @@ public class XO extends JFrame implements Runnable {
     private boolean connectSocket() {
         try {
             this.$socket = new Socket(this.$ip, this.$port);
+            this.$dataOutputStream = new DataOutputStream(this.$socket.getOutputStream());
+            this.$dataInputStream = new DataInputStream(this.$socket.getInputStream());
+        
+            JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort, null, JOptionPane.OK_OPTION);
         } catch (IOException $io) {
-
+            JOptionPane.showMessageDialog(null, "No se puede conectar a la dirección: " + this.$ipPort, null, JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
