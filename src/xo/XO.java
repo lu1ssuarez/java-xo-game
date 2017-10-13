@@ -136,6 +136,7 @@ public class XO extends JFrame implements Runnable {
             JOptionPane.showMessageDialog(null, "Se ha creado el servidor correctamente " + this.$ipPort);
         } catch (Exception $exception) {
             JOptionPane.showMessageDialog(null, "No se puede crear el servidor", null, JOptionPane.ERROR_MESSAGE);
+            this.setConfig();
         }
     }
 }
