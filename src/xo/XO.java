@@ -53,21 +53,32 @@ public class XO extends JFrame implements Runnable {
         this.setVisible(true);
 
         /* 3- input's settings server */
-        Object[] $typeServerButtons = {"Conectar", "Crear servidor", "Cerrar"};
-        int $typeServer = JOptionPane.showOptionDialog(null, "Deseas conectarte a un servidor o crear uno nuevo.", null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, $typeServerButtons, "Cerrar");
-        JOptionPane.showMessageDialog(null, "Opcion: " + $typeServer);
-
-        this.setConfigServer();
-
-        /* 4- check socket connection */
-        if (!this.connectSocket()) {
-            this.initServerSocket();
-        }
+        this.setConfig();
     }
 
     @Override
     public void run() {
 
+    }
+    private void setConfig() {
+        Object[] $typeServerButtons = {"Conectar", "Crear servidor", "Cerrar"};
+        int $typeServer = JOptionPane.showOptionDialog(null, "Deseas conectarte a un servidor o crear uno nuevo.", null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, $typeServerButtons, "Cerrar");
+
+        switch ($typeServer) {
+            case JOptionPane.CANCEL_OPTION:
+                System.exit(0);
+            case JOptionPane.YES_OPTION:
+                this.setConfigServer();
+                this.connectSocket();
+                break;
+            case JOptionPane.NO_OPTION:
+                this.setConfigServer();
+                this.initServerSocket();
+                break;
+            default:
+                System.exit(0);
+                break;
+        }
     }
 
     private void setConfigServer() {
@@ -111,6 +122,7 @@ public class XO extends JFrame implements Runnable {
             JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
         } catch (IOException $io) {
             JOptionPane.showMessageDialog(null, "No se puede conectar a la dirección: " + this.$ipPort, null, JOptionPane.ERROR_MESSAGE);
+            this.setConfig();
             return false;
         }
 
