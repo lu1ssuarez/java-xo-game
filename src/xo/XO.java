@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JFrame;
@@ -55,8 +56,8 @@ public class XO extends JFrame implements Runnable {
         this.setConfigServer();
 
         /* 4- check socket connection */
-        if (this.connectSocket()) {
-
+        if (!this.connectSocket()) {
+            this.initServerSocket();
         }
     }
 
@@ -68,10 +69,8 @@ public class XO extends JFrame implements Runnable {
     private void setConfigServer() {
         this.setIpServer();
         this.setPortServer();
-        
-        this.$ipPort = this.$ip + ":" + this.$port;
 
-        System.out.println("Conectando al servidor: " + this.$ipPort);
+        this.$ipPort = this.$ip + ":" + this.$port;
     }
 
     private void setIpServer() {
@@ -104,13 +103,23 @@ public class XO extends JFrame implements Runnable {
             this.$socket = new Socket(this.$ip, this.$port);
             this.$dataOutputStream = new DataOutputStream(this.$socket.getOutputStream());
             this.$dataInputStream = new DataInputStream(this.$socket.getInputStream());
-        
-            JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort, null, JOptionPane.OK_OPTION);
+
+            JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
         } catch (IOException $io) {
             JOptionPane.showMessageDialog(null, "No se puede conectar a la dirección: " + this.$ipPort, null, JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         return true;
+    }
+
+    private void initServerSocket() {
+        try {
+            this.$serverSocket = new ServerSocket(this.$port, 8, InetAddress.getByName(this.$ip));
+
+            JOptionPane.showMessageDialog(null, "Se ha creado el servidor correctamente " + this.$ipPort);
+        } catch (Exception $exception) {
+            JOptionPane.showMessageDialog(null, "No se puede crear el servidor", null, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
