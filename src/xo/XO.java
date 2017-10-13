@@ -29,6 +29,8 @@ public class XO extends JFrame implements Runnable {
     private int $port = 3000;
     private String $ipPort;
 
+    private String $name;
+
     /**
      * @param args the command line arguments
      */
@@ -52,6 +54,8 @@ public class XO extends JFrame implements Runnable {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
 
+        this.setNameUser();
+        
         /* 3- input's settings server */
         this.setConfig();
     }
@@ -60,9 +64,22 @@ public class XO extends JFrame implements Runnable {
     public void run() {
 
     }
+
+    private void setNameUser() {
+        try {
+            this.$name = JOptionPane.showInputDialog("Ingrese su nombre de usuario:", this.$name);
+
+            if (this.$name.isEmpty()) {
+                this.setNameUser();
+            }
+        } catch (Exception exception) {
+            this.setNameUser();
+        }
+    }
+
     private void setConfig() {
         Object[] $typeServerButtons = {"Conectar", "Crear servidor", "Cerrar"};
-        int $typeServer = JOptionPane.showOptionDialog(null, "Deseas conectarte a un servidor o crear uno nuevo.", null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, $typeServerButtons, "Cerrar");
+        int $typeServer = JOptionPane.showOptionDialog(null, "Deseas conectarte a un servidor o crear uno nuevo.", "Hola " + this.$name, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, $typeServerButtons, "Cerrar");
 
         switch ($typeServer) {
             case JOptionPane.CANCEL_OPTION:
