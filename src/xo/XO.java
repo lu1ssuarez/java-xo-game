@@ -53,6 +53,10 @@ public class XO extends JFrame implements Runnable {
         this.setVisible(true);
 
         /* 3- input's settings server */
+        Object[] $typeServerButtons = {"Conectar", "Crear servidor", "Cerrar"};
+        int $typeServer = JOptionPane.showOptionDialog(null, "Deseas conectarte a un servidor o crear uno nuevo.", null, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, $typeServerButtons, "Cerrar");
+        JOptionPane.showMessageDialog(null, "Opcion: " + $typeServer);
+
         this.setConfigServer();
 
         /* 4- check socket connection */
