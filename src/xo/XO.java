@@ -1,7 +1,9 @@
 package xo;
 
 import java.awt.Dimension;
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -14,10 +16,11 @@ public class XO extends JFrame implements Runnable {
     private Painter $painter;
 
     private ServerSocket $serverSocket;
+    private Socket $socket;
 
     /* Input setting server */
     private String $ip = "127.0.0.1";
-    private String $port = "3000";
+    private int $port = 3000;
 
     /**
      * @param args the command line arguments
@@ -44,6 +47,11 @@ public class XO extends JFrame implements Runnable {
 
         /* 3- input's settings server */
         this.setConfigServer();
+
+        /* 4- check socket connection */
+        if (this.connectSocket()) {
+
+        }
     }
 
     @Override
@@ -72,9 +80,9 @@ public class XO extends JFrame implements Runnable {
 
     private void setPortServer() {
         try {
-            this.$port = JOptionPane.showInputDialog("Ingrese el puerto a conectar:", this.$port);
+            this.$port = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el puerto a conectar:", this.$port));
 
-            if (this.$port.isEmpty()) {
+            if (this.$port == 0) {
                 this.setPortServer();
             }
         } catch (Exception exception) {
@@ -82,4 +90,15 @@ public class XO extends JFrame implements Runnable {
         }
     }
 
+    /* Socket */
+    private boolean connectSocket() {
+        try {
+            this.$socket = new Socket(this.$ip, this.$port);
+        } catch (IOException $io) {
+
+            return false;
+        }
+
+        return true;
+    }
 }
