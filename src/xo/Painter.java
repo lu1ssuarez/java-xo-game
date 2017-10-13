@@ -42,5 +42,9 @@ public class Painter extends JPanel implements MouseListener {
     public void mouseExited(MouseEvent me) {
 
     }
+
+    void setBounds(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
