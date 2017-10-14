@@ -14,9 +14,11 @@ import javax.swing.JOptionPane;
  *
  * @author Eysemberth Abarca
  */
-public class XO extends JFrame implements Runnable {
+public class XO implements Runnable {
 
     private Painter $painter;
+    private JFrame $frame;
+    private Thread $thread;
 
     /* Socket Server */
     private ServerSocket $serverSocket;
@@ -30,8 +32,8 @@ public class XO extends JFrame implements Runnable {
     private String $ipPort;
 
     private String $name;
-    
-    private Thread $thread;
+
+    private boolean $accepted = false;
 
     /**
      * @param args the command line arguments
@@ -42,31 +44,37 @@ public class XO extends JFrame implements Runnable {
 
     public XO() {
         System.out.println("Iniciando XO...");
+        this.setNameUser();
+
+        this.setConfig();
 
         /* 2- draw jPanel for event listener */
         this.$painter = new Painter();
         this.$painter.setPreferredSize(new Dimension(506, 527));
 
         /* 1- init $body with jFrame */
-        this.setTitle("XO Game by Eysemberth Abarca");
-        this.setContentPane(this.$painter);
-        this.setSize(506, 527);
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setVisible(true);
+        this.$frame = new JFrame();
+        this.$frame.setTitle("Hola " + this.$name + ", Bienvenido a XO Game");
+        this.$frame.setContentPane(this.$painter);
+        this.$frame.setSize(506, 527);
+        this.$frame.setLocationRelativeTo(null);
+        this.$frame.setResizable(false);
+        this.$frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.$frame.setVisible(true);
 
-        this.setNameUser();
-        
-        /* 3- input's settings server */
-        this.setConfig();
+        this.$thread = new Thread(this, "XO Game");
+        this.$thread.start();
     }
 
     @Override
     public void run() {
         while (true) {
-            this.listenForServerRequest();
-        }        
+            this.$painter.repaint();
+
+            if (!this.$accepted) {
+                this.listenForServerRequest();
+            }
+        }
     }
 
     private void setNameUser() {
@@ -140,6 +148,11 @@ public class XO extends JFrame implements Runnable {
             this.$dataOutputStream = new DataOutputStream(this.$socket.getOutputStream());
             this.$dataInputStream = new DataInputStream(this.$socket.getInputStream());
 
+            this.$dataOutputStream.writeUTF(this.$name);
+            this.$dataOutputStream.writeUTF("prueba pruebita");
+            
+            this.$accepted = true;
+
             JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
         } catch (IOException $io) {
             JOptionPane.showMessageDialog(null, "No se puede conectar a la dirección: " + this.$ipPort, null, JOptionPane.ERROR_MESSAGE);
@@ -160,15 +173,17 @@ public class XO extends JFrame implements Runnable {
             this.setConfig();
         }
     }
-    
-    private void listenForServerRequest() {
+
+    private boolean listenForServerRequest() {
         Socket $socketClient = null;
-        
+
         try {
             $socketClient = this.$serverSocket.accept();
             this.$dataOutputStream = new DataOutputStream($socketClient.getOutputStream());
             this.$dataInputStream = new DataInputStream($socketClient.getInputStream());
-            
+
+            this.$accepted = true;
+
             System.out.println($socketClient);
             System.out.println(this.$dataOutputStream);
             System.out.println(this.$dataInputStream);
@@ -176,5 +191,7 @@ public class XO extends JFrame implements Runnable {
             System.err.println("error");
             $io.printStackTrace();
         }
+
+        return true;
     }
 }
