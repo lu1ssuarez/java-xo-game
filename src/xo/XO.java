@@ -161,4 +161,20 @@ public class XO extends JFrame implements Runnable {
             this.setConfig();
         }
     }
+    
+    private void listenForServerRequest() {
+        Socket $socketRequest = null;
+        
+        try {
+            $socketRequest = this.$serverSocket.accept();
+            this.$dataOutputStream = new DataOutputStream($socketRequest.getOutputStream());
+            this.$dataInputStream = new DataInputStream($socketRequest.getInputStream());
+            
+            System.out.println("solicitud");
+        } catch (IOException $io) {
+            System.err.println("error");
+            $io.printStackTrace();
+        }
+        System.out.println("Prueba prueba");
+    }
 }
