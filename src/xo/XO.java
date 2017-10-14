@@ -67,7 +67,7 @@ public class XO extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        
+        this.listenForServerRequest();
     }
 
     private void setNameUser() {
