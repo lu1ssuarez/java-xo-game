@@ -60,9 +60,6 @@ public class XO extends JFrame implements Runnable {
         
         /* 3- input's settings server */
         this.setConfig();
-        
-        $thread = new Thread(this, "TresEnLinea");
-        $thread.start();
     }
 
     @Override
