@@ -25,7 +25,7 @@ public class XO extends JFrame implements Runnable {
     private DataInputStream $dataInputStream;
 
     /* Input setting server */
-    private String $ip = "127.0.0.1";
+    private String $ip = "192.168.2.104";
     private int $port = 3000;
     private String $ipPort;
 
