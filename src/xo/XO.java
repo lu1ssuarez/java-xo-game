@@ -67,7 +67,9 @@ public class XO extends JFrame implements Runnable {
 
     @Override
     public void run() {
-        this.listenForServerRequest();
+        while (true) {
+            this.listenForServerRequest();
+        }        
     }
 
     private void setNameUser() {
@@ -170,7 +172,8 @@ public class XO extends JFrame implements Runnable {
             this.$dataOutputStream = new DataOutputStream($socketRequest.getOutputStream());
             this.$dataInputStream = new DataInputStream($socketRequest.getInputStream());
             
-            System.out.println("solicitud");
+            System.out.println(this.$dataOutputStream);
+            System.out.println(this.$dataInputStream);
         } catch (IOException $io) {
             System.err.println("error");
             $io.printStackTrace();
