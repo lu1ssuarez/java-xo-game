@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 public class Board extends javax.swing.JFrame {
@@ -31,6 +32,8 @@ public class Board extends javax.swing.JFrame {
 
     private String $name;
     private String $namePlayer;
+
+    private String $option;
 
     /**
      * Creates new form Board
@@ -134,6 +137,8 @@ public class Board extends javax.swing.JFrame {
 
     /* Socket Player */
     private boolean connectSocket() {
+        $option = "O";
+
         try {
             $socketPlayer = new Socket($ip, $port);
 
@@ -163,6 +168,8 @@ public class Board extends javax.swing.JFrame {
 
     /* Socket Server */
     private void initServerSocket() {
+        $option = "X";
+
         try {
             $serverSocket = new ServerSocket($port, 8, InetAddress.getByName($ip));
             JOptionPane.showMessageDialog(null, "Se ha creado el servidor [" + $ipPort + "] correctamente \n"
@@ -180,6 +187,7 @@ public class Board extends javax.swing.JFrame {
                 case JOptionPane.YES_OPTION:
                     $dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
                     $dataOutputStreamServer.writeObject("YES");
+
                     break;
                 case JOptionPane.NO_OPTION:
                     $dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
@@ -198,6 +206,14 @@ public class Board extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void setOption() {
+
+    }
+
+    private void setIconLabel(JLabel $icon, String $option) {
+        $icon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/xo/image/" + $option + ".png")));
     }
 
     /**
@@ -237,8 +253,18 @@ public class Board extends javax.swing.JFrame {
         $icon3.setText("icon3");
 
         $icon1.setText("icon1");
+        $icon1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                $icon1MouseClicked(evt);
+            }
+        });
 
         $icon2.setText("icon2");
+        $icon2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                $icon2MouseClicked(evt);
+            }
+        });
 
         $bgBoard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/xo/image/board.png"))); // NOI18N
 
@@ -299,6 +325,14 @@ public class Board extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void $icon1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_$icon1MouseClicked
+        setIconLabel($icon1, $option);
+    }//GEN-LAST:event_$icon1MouseClicked
+
+    private void $icon2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_$icon2MouseClicked
+        setIconLabel($icon2, $option);
+    }//GEN-LAST:event_$icon2MouseClicked
 
     /**
      * @param args the command line arguments

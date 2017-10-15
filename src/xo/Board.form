@@ -131,6 +131,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="icon1"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="$icon1MouseClicked"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Main_$icon1"/>
       </AuxValues>
@@ -139,6 +142,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="icon2"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="$icon2MouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="$bgBoard">
       <Properties>
