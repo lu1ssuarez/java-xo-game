@@ -27,7 +27,7 @@ public class XO implements Runnable {
     private DataInputStream $dataInputStream;
 
     /* Input setting server */
-    private String $ip = "192.168.2.104";
+    private String $ip = "";
     private int $port = 3000;
     private String $ipPort;
 
@@ -97,10 +97,12 @@ public class XO implements Runnable {
             case JOptionPane.CANCEL_OPTION:
                 System.exit(0);
             case JOptionPane.YES_OPTION:
+                this.$ip = "";
                 this.setConfigServer();
                 this.connectSocket();
                 break;
             case JOptionPane.NO_OPTION:
+                this.$ip = this.getIpLocal();
                 this.setConfigServer();
                 this.initServerSocket();
                 break;
@@ -108,6 +110,19 @@ public class XO implements Runnable {
                 System.exit(0);
                 break;
         }
+    }
+    
+    private String getIpLocal() {
+        String $ip;
+        
+        try {
+            InetAddress $address = InetAddress.getLocalHost();
+            $ip = $address.getHostAddress();
+        } catch (Exception $exception) {
+            $ip = "127.0.0.1";
+        }
+        
+        return $ip;
     }
 
     private void setConfigServer() {
