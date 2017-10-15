@@ -111,17 +111,17 @@ public class XO implements Runnable {
                 break;
         }
     }
-    
+
     private String getIpLocal() {
         String $ip;
-        
+
         try {
             InetAddress $address = InetAddress.getLocalHost();
             $ip = $address.getHostAddress();
         } catch (Exception $exception) {
             $ip = "127.0.0.1";
         }
-        
+
         return $ip;
     }
 
@@ -133,14 +133,16 @@ public class XO implements Runnable {
     }
 
     private void setIpServer() {
-        try {
-            this.$ip = JOptionPane.showInputDialog("Ingrese la ip del servidor:", this.$ip);
+        if (this.$ip.isEmpty()) {
+            try {
+                this.$ip = JOptionPane.showInputDialog("Ingrese la ip del servidor:", this.$ip);
 
-            if (this.$ip.isEmpty()) {
+                if (this.$ip.isEmpty()) {
+                    this.setIpServer();
+                }
+            } catch (Exception exception) {
                 this.setIpServer();
             }
-        } catch (Exception exception) {
-            this.setIpServer();
         }
     }
 
@@ -165,7 +167,7 @@ public class XO implements Runnable {
 
             this.$dataOutputStream.writeUTF(this.$name);
             this.$dataOutputStream.writeUTF("prueba pruebita");
-            
+
             this.$accepted = true;
 
             JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
