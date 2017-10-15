@@ -156,7 +156,7 @@ public class Board extends javax.swing.JFrame {
             setConfig();
             return false;
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(XO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return true;
@@ -197,7 +197,7 @@ public class Board extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "No se puede crear el servidor", null, JOptionPane.ERROR_MESSAGE);
             setConfig();
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(XO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
