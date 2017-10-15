@@ -173,6 +173,7 @@ public class XO implements Runnable {
             String $accepted = (String) this.$dataInputStreamServer.readObject();
 
             if ($accepted.equalsIgnoreCase("NO")) {
+                this.$socketPlayer.close();
                 JOptionPane.showMessageDialog(null, "Se ha denegado tu solicitud de unirte al juego", null, JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
@@ -210,10 +211,12 @@ public class XO implements Runnable {
                 case JOptionPane.NO_OPTION:
                     this.$dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
                     this.$dataOutputStreamServer.writeObject("NO");
+                    $socketPlayer.close();
                     break;
                 default:
                     this.$dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
                     this.$dataOutputStreamServer.writeObject("NO");
+                    $socketPlayer.close();
                     break;
             }
         } catch (IOException $exception) {
