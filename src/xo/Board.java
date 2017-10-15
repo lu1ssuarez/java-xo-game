@@ -42,7 +42,6 @@ public class Board extends javax.swing.JFrame {
         initComponents();
 
         setTitle("Hola " + $name + ", Bienvenido a XO Game");
-        //setSize(506, 527);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
