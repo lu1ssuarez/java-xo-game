@@ -42,7 +42,7 @@ public class Board extends javax.swing.JFrame {
         initComponents();
 
         setTitle("Hola " + $name + ", Bienvenido a XO Game");
-        setSize(506, 527);
+        //setSize(506, 527);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -269,7 +269,7 @@ public class Board extends javax.swing.JFrame {
                                 .addComponent($icon8, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10)
                                 .addComponent($icon9, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(0, 118, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
