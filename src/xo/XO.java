@@ -162,18 +162,18 @@ public class XO implements Runnable {
         try {
             this.$socketPlayer = new Socket(this.$ip, this.$port);
 
-            JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
+            // JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
 
             this.$dataOutputStreamPlayer = new ObjectOutputStream(this.$socketPlayer.getOutputStream());
             this.$dataOutputStreamPlayer.writeObject(this.$name);
-            
+
             JOptionPane.showMessageDialog(null, "Espere mientras se acepta unirse al juego");
 
             this.$dataInputStreamServer = new ObjectInputStream(this.$socketPlayer.getInputStream());
             String $accepted = (String) this.$dataInputStreamServer.readObject();
 
             if ($accepted.equalsIgnoreCase("NO")) {
-                JOptionPane.showMessageDialog(null, "Se ha denegado tu solicitud de unirte al juego");
+                JOptionPane.showMessageDialog(null, "Se ha denegado tu solicitud de unirte al juego", null, JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
         } catch (IOException $io) {
@@ -196,8 +196,8 @@ public class XO implements Runnable {
 
             Socket $socketPlayer = this.$serverSocket.accept();
 
-            this.$dataInputStreamServer = new ObjectInputStream($socketPlayer.getInputStream());
-            this.$namePlayer = (String) this.$dataInputStreamServer.readObject();
+            this.$dataInputStreamPlayer = new ObjectInputStream($socketPlayer.getInputStream());
+            this.$namePlayer = (String) this.$dataInputStreamPlayer.readObject();
 
             Object[] $optionButtons = {"Si", "No"};
             int $optionConnect = JOptionPane.showOptionDialog(null, this.$namePlayer + " desea jugar contigo, estas de acuerdo?", "Conexion entrante", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, $optionButtons, "No");
