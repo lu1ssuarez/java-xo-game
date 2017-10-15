@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -20,7 +19,6 @@ import javax.swing.JOptionPane;
 public class XO implements Runnable {
 
     /* Build GUI */
-    private Painter $painter;
     private JFrame $frame;
 
     /* Socket Server */
@@ -54,14 +52,9 @@ public class XO implements Runnable {
 
         this.setConfig();
 
-        /* 2- draw jPanel for event listener */
-        this.$painter = new Painter();
-        this.$painter.setPreferredSize(new Dimension(506, 527));
-
         /* 1- init $body with jFrame */
         this.$frame = new JFrame();
         this.$frame.setTitle("Hola " + this.$name + ", Bienvenido a XO Game");
-        this.$frame.setContentPane(this.$painter);
         this.$frame.setSize(506, 527);
         this.$frame.setLocationRelativeTo(null);
         this.$frame.setResizable(false);
@@ -164,7 +157,6 @@ public class XO implements Runnable {
             this.$socketPlayer = new Socket(this.$ip, this.$port);
 
             // JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
-
             this.$dataOutputStreamPlayer = new ObjectOutputStream(this.$socketPlayer.getOutputStream());
             this.$dataOutputStreamPlayer.writeObject(this.$name);
 
