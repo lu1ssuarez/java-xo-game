@@ -70,13 +70,13 @@ public class Board extends javax.swing.JFrame {
                 break;
             case JOptionPane.YES_OPTION:
                 $ip = "";
-                setConfigServer();
+                setConfigServer($ip);
                 connectSocket();
 
                 break;
             case JOptionPane.NO_OPTION:
                 $ip = getIpLocal();
-                setConfigServer();
+                setConfigServer($ip);
                 initServerSocket();
 
                 break;
@@ -91,7 +91,7 @@ public class Board extends javax.swing.JFrame {
 
         try {
             InetAddress $address = InetAddress.getLocalHost();
-            $ip = $address.getHostAddress();
+            $ip = (String) $address.getHostAddress();
         } catch (UnknownHostException $exception) {
             $ip = "127.0.0.1";
         }
@@ -99,25 +99,24 @@ public class Board extends javax.swing.JFrame {
         return $ip;
     }
 
-    private void setConfigServer() {
-        setIpServer();
+    private void setConfigServer(String $ipParam) {
+        setIpServer($ipParam);
         setPortServer();
 
         $ipPort = $ip + ":" + $port;
     }
 
-    private void setIpServer() {
-        $ip = "";
-
+    private void setIpServer(String $ipParam) {
         if ($ip.isEmpty() || ($ip.equals("127.0.0.1") || $ip.equals("127.0.1.1"))) {
             try {
                 $ip = JOptionPane.showInputDialog("Ingrese la ip del servidor:", $ip);
 
                 if ($ip.isEmpty() || ($ip.equals("127.0.0.1") || $ip.equals("127.0.1.1"))) {
-                    setIpServer();
+                    setIpServer($ipParam);
                 }
             } catch (NullPointerException $exception) {
-                setIpServer();
+                $ip = $ipParam;
+                setIpServer($ipParam);
             }
         }
     }
