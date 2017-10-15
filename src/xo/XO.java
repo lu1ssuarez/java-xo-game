@@ -1,12 +1,14 @@
 package xo;
 
 import java.awt.Dimension;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -16,15 +18,19 @@ import javax.swing.JOptionPane;
  */
 public class XO implements Runnable {
 
+    /* Build GUI */
     private Painter $painter;
     private JFrame $frame;
-    private Thread $thread;
 
     /* Socket Server */
     private ServerSocket $serverSocket;
-    private Socket $socket;
-    private DataOutputStream $dataOutputStream;
-    private DataInputStream $dataInputStream;
+    private ObjectOutputStream $dataOutputStreamServer;
+    private ObjectInputStream $dataInputStreamServer;
+
+    /* Socket Player */
+    private Socket $socketPlayer;
+    private ObjectOutputStream $dataOutputStreamPlayer;
+    private ObjectInputStream $dataInputStreamPlayer;
 
     /* Input setting server */
     private String $ip = "";
@@ -32,8 +38,7 @@ public class XO implements Runnable {
     private String $ipPort;
 
     private String $name;
-
-    private boolean $accepted = false;
+    private String $namePlayer;
 
     /**
      * @param args the command line arguments
@@ -61,20 +66,11 @@ public class XO implements Runnable {
         this.$frame.setResizable(false);
         this.$frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.$frame.setVisible(true);
-
-        this.$thread = new Thread(this, "XO Game");
-        this.$thread.start();
     }
 
     @Override
     public void run() {
-        while (true) {
-            this.$painter.repaint();
 
-            if (!this.$accepted) {
-                this.listenForServerRequest();
-            }
-        }
     }
 
     private void setNameUser() {
@@ -96,15 +92,18 @@ public class XO implements Runnable {
         switch ($typeServer) {
             case JOptionPane.CANCEL_OPTION:
                 System.exit(0);
+                break;
             case JOptionPane.YES_OPTION:
                 this.$ip = "";
                 this.setConfigServer();
                 this.connectSocket();
+
                 break;
             case JOptionPane.NO_OPTION:
                 this.$ip = this.getIpLocal();
                 this.setConfigServer();
                 this.initServerSocket();
+
                 break;
             default:
                 System.exit(0);
@@ -133,14 +132,14 @@ public class XO implements Runnable {
     }
 
     private void setIpServer() {
-        if (this.$ip.isEmpty()) {
+        if (this.$ip.isEmpty() || (this.$ip.equals("127.0.0.1") || this.$ip.equals("127.0.1.1"))) {
             try {
                 this.$ip = JOptionPane.showInputDialog("Ingrese la ip del servidor:", this.$ip);
 
-                if (this.$ip.isEmpty()) {
+                if (this.$ip.isEmpty() || (this.$ip.equals("127.0.0.1") || this.$ip.equals("127.0.1.1"))) {
                     this.setIpServer();
                 }
-            } catch (Exception exception) {
+            } catch (Exception $exception) {
                 this.setIpServer();
             }
         }
@@ -153,62 +152,75 @@ public class XO implements Runnable {
             if (this.$port == 0) {
                 this.setPortServer();
             }
-        } catch (Exception exception) {
+        } catch (NumberFormatException $exception) {
             this.setPortServer();
         }
     }
 
-    /* Socket */
+    /* Socket Player */
     private boolean connectSocket() {
         try {
-            this.$socket = new Socket(this.$ip, this.$port);
-            this.$dataOutputStream = new DataOutputStream(this.$socket.getOutputStream());
-            this.$dataInputStream = new DataInputStream(this.$socket.getInputStream());
-
-            this.$dataOutputStream.writeUTF(this.$name);
-            this.$dataOutputStream.writeUTF("prueba pruebita");
-
-            this.$accepted = true;
+            this.$socketPlayer = new Socket(this.$ip, this.$port);
 
             JOptionPane.showMessageDialog(null, "Se ha conectado correctamente al servidor " + this.$ipPort);
+
+            this.$dataOutputStreamPlayer = new ObjectOutputStream(this.$socketPlayer.getOutputStream());
+            this.$dataOutputStreamPlayer.writeObject(this.$name);
+            
+            JOptionPane.showMessageDialog(null, "Espere mientras se acepta unirse al juego");
+
+            this.$dataInputStreamServer = new ObjectInputStream(this.$socketPlayer.getInputStream());
+            String $accepted = (String) this.$dataInputStreamServer.readObject();
+
+            if ($accepted.equalsIgnoreCase("NO")) {
+                JOptionPane.showMessageDialog(null, "Se ha denegado tu solicitud de unirte al juego");
+                System.exit(0);
+            }
         } catch (IOException $io) {
             JOptionPane.showMessageDialog(null, "No se puede conectar a la dirección: " + this.$ipPort, null, JOptionPane.ERROR_MESSAGE);
             this.setConfig();
             return false;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(XO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return true;
     }
 
+    /* Socket Server */
     private void initServerSocket() {
         try {
             this.$serverSocket = new ServerSocket(this.$port, 8, InetAddress.getByName(this.$ip));
+            JOptionPane.showMessageDialog(null, "Se ha creado el servidor [" + this.$ipPort + "] correctamente \n"
+                    + "Esperando conexion...");
 
-            JOptionPane.showMessageDialog(null, "Se ha creado el servidor correctamente " + this.$ipPort);
-        } catch (Exception $exception) {
+            Socket $socketPlayer = this.$serverSocket.accept();
+
+            this.$dataInputStreamServer = new ObjectInputStream($socketPlayer.getInputStream());
+            this.$namePlayer = (String) this.$dataInputStreamServer.readObject();
+
+            Object[] $optionButtons = {"Si", "No"};
+            int $optionConnect = JOptionPane.showOptionDialog(null, this.$namePlayer + " desea jugar contigo, estas de acuerdo?", "Conexion entrante", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, $optionButtons, "No");
+
+            switch ($optionConnect) {
+                case JOptionPane.YES_OPTION:
+                    this.$dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
+                    this.$dataOutputStreamServer.writeObject("YES");
+                    break;
+                case JOptionPane.NO_OPTION:
+                    this.$dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
+                    this.$dataOutputStreamServer.writeObject("NO");
+                    break;
+                default:
+                    this.$dataOutputStreamServer = new ObjectOutputStream($socketPlayer.getOutputStream());
+                    this.$dataOutputStreamServer.writeObject("NO");
+                    break;
+            }
+        } catch (IOException $exception) {
             JOptionPane.showMessageDialog(null, "No se puede crear el servidor", null, JOptionPane.ERROR_MESSAGE);
             this.setConfig();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(XO.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    private boolean listenForServerRequest() {
-        Socket $socketClient = null;
-
-        try {
-            $socketClient = this.$serverSocket.accept();
-            this.$dataOutputStream = new DataOutputStream($socketClient.getOutputStream());
-            this.$dataInputStream = new DataInputStream($socketClient.getInputStream());
-
-            this.$accepted = true;
-
-            System.out.println($socketClient);
-            System.out.println(this.$dataOutputStream);
-            System.out.println(this.$dataInputStream);
-        } catch (IOException $io) {
-            System.err.println("error");
-            $io.printStackTrace();
-        }
-
-        return true;
     }
 }
